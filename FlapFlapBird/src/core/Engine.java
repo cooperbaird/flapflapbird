@@ -76,7 +76,7 @@ public class Engine {
 		Rectangle topPRect = topPipes.get(0).getBounds();
 		Rectangle bottomPRect = bottomPipes.get(0).getBounds();
 		
-		if(bEllipse.intersects(topPRect) || bEllipse.intersects(bottomPRect)) // hits pipes
+		if(bEllipse.intersects(topPRect) || bEllipse.intersects(bottomPRect)) // hits a pipe
 			endGame();
 	}
 	
@@ -87,7 +87,7 @@ public class Engine {
 	
 	private void score() {
 		int p = topPipes.get(0).x;
-		if(p == 40)
+		if(p == 40) // gets past the leading pipe
 			scoreOperations.increaseScore();
 	}
 	
