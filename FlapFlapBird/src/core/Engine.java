@@ -73,13 +73,11 @@ public class Engine {
 			endGame();
 		
 		Ellipse2D bEllipse = bird.getBounds();
+		Rectangle topPRect = topPipes.get(0).getBounds();
+		Rectangle bottomPRect = bottomPipes.get(0).getBounds();
 		
-		for(int p = 0; p < topPipes.size(); p++) {
-			Rectangle topPRect = topPipes.get(p).getBounds();
-			Rectangle bottomPRect = bottomPipes.get(p).getBounds();
-			if(bEllipse.intersects(topPRect) || bEllipse.intersects(bottomPRect)) // hits pipes
-				endGame();
-		}
+		if(bEllipse.intersects(topPRect) || bEllipse.intersects(bottomPRect)) // hits pipes
+			endGame();
 	}
 	
 	private void endGame() {
@@ -88,10 +86,9 @@ public class Engine {
 	}
 	
 	private void score() {
-		for(Pipe p : topPipes) {
-			if(p.x == 99)
-				scoreOperations.increaseScore();
-		}
+		int p = topPipes.get(0).x;
+		if(p == 40)
+			scoreOperations.increaseScore();
 	}
 	
 	/**
