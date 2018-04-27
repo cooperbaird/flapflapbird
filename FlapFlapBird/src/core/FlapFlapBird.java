@@ -27,8 +27,8 @@ public class FlapFlapBird extends JFrame implements KeyListener, MouseListener {
 	private Engine engine;
 	
 	public FlapFlapBird() {
-		engine = new Engine();
-		
+		GamePanel panel = new GamePanel();
+		engine = new Engine(panel);	
 		setSize(650, 500);
 		setTitle("Flap Flap Bird");
 		setLocationRelativeTo(null);
@@ -37,10 +37,9 @@ public class FlapFlapBird extends JFrame implements KeyListener, MouseListener {
 		addKeyListener(this);
 		addMouseListener(this);
 		setFocusable(true);
-
-		add(new GamePanel());
+		add(panel);
 		setVisible(true);
-		animate();
+		engine.animate();
 	}
 	
 	@Override
@@ -52,7 +51,7 @@ public class FlapFlapBird extends JFrame implements KeyListener, MouseListener {
 		} else if(key == KeyEvent.VK_ESCAPE) {
 			if(engine.getPostGame()) {
 				engine.resetGame();
-				animate();
+				engine.animate();
 			}
 		}
 	}
@@ -75,38 +74,6 @@ public class FlapFlapBird extends JFrame implements KeyListener, MouseListener {
 	@Override
 	public void keyTyped(KeyEvent e) {}
 	
-	private void animate() {
-		Thread animate = new Thread() {
-			public void run() {
-				while(!engine.getPostGame()) {
-					engine.gameMovement();
-					repaint();
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) { 
-						e.printStackTrace(); 
-					}
-				}
-			}
-		};
-		
-		Thread flapWings = new Thread() {
-			public void run() {
-				while(!engine.getPostGame()) {
-					engine.flapWings();
-					try { 
-						Thread.sleep(175); 
-					} catch (InterruptedException e) { 
-						e.printStackTrace(); 
-					}
-				}
-			}
-		};
-		
-		animate.start();
-		flapWings.start();
-	}
-	
 	/**
 	 * The GamePanel where everything is painted on
 	 * 
@@ -119,7 +86,7 @@ public class FlapFlapBird extends JFrame implements KeyListener, MouseListener {
 		
 		public GamePanel() {
 			setDoubleBuffered(true); // buffer panel off-screen first and then paint to avoid flickering
-			
+						
 			try {
 				smallFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/OCRAStd.ttf"));
 				largeFont = smallFont.deriveFont(36.0f);

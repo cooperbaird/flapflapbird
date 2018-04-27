@@ -4,6 +4,8 @@ import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
 
+import javax.swing.JPanel;
+
 import components.Bird;
 import components.Ground;
 import components.Pipe;
@@ -16,6 +18,7 @@ import factory.PipeFactory;
  * @author cooperbaird
  */
 public class Engine {
+	private JPanel panel;
 	private Bird bird;
 	private GroundFactory groundFactory;
 	private PipeFactory pipeFactory;
@@ -24,7 +27,11 @@ public class Engine {
 	private List<Pipe> topPipes, bottomPipes;
 	private boolean preGame, postGame;
 	
-	public Engine() {
+	/**
+	 * @param panel the panel to paint the game on
+	 */
+	public Engine(JPanel panel) {
+		this.panel = panel;
 		bird = new Bird();
 		groundFactory = new GroundFactory();
 		pipeFactory = new PipeFactory();
@@ -36,19 +43,39 @@ public class Engine {
 		postGame = false;
 	}
 	
-	public void jump() {
-		preGame = false;
-		bird.resetValues();
+	public void animate() {
+		Thread animate = new Thread() {
+			public void run() {
+				while(!getPostGame()) {
+					gameMovement();
+					panel.repaint();
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) { 
+						e.printStackTrace(); 
+					}
+				}
+			}
+		};
+		
+		Thread flapWings = new Thread() {
+			public void run() {
+				while(!getPostGame()) {
+					flapWings();
+					try { 
+						Thread.sleep(175); 
+					} catch (InterruptedException e) { 
+						e.printStackTrace(); 
+					}
+				}
+			}
+		};
+		
+		animate.start();
+		flapWings.start();
 	}
 	
-	public void resetGame() {
-		preGame = true;
-		postGame = false;
-		pipeFactory.clearPipes();
-		scoreOperations.resetScore();
-	}
-	
-	public void gameMovement() {
+	private void gameMovement() {
 		groundFactory.moveGrounds();
 		groundFactory.addGround();
 		
@@ -63,7 +90,7 @@ public class Engine {
 		}
 	}
 	
-	public void flapWings() {
+	private void flapWings() {
 		bird.flap();
 	}
 	
@@ -89,6 +116,18 @@ public class Engine {
 		int p = topPipes.get(0).x;
 		if(p == 40) // gets past the leading pipe
 			scoreOperations.increaseScore();
+	}
+	
+	public void jump() {
+		preGame = false;
+		bird.resetValues();
+	}
+	
+	public void resetGame() {
+		preGame = true;
+		postGame = false;
+		pipeFactory.clearPipes();
+		scoreOperations.resetScore();
 	}
 	
 	/**
