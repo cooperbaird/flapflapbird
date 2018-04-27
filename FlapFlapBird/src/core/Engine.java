@@ -77,6 +77,26 @@ public class Engine {
 		flapWings.start();
 	}
 	
+	private void animateDeath() {
+		Thread die = new Thread() {
+			@Override
+			public void run() {
+				bird.setDeadValues();
+				while(bird.getBirdY() < 500) {
+					bird.moveBird();
+					panel.repaint();
+					try {
+						Thread.sleep(5);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		
+		die.start();
+	}
+	
 	private void gameMovement() {
 		groundFactory.moveGrounds();
 		groundFactory.addGround();
@@ -112,24 +132,7 @@ public class Engine {
 	private void endGame() {
 		scoreOperations.editHighScore();
 		postGame = true;
-		
-		Thread die = new Thread() {
-			@Override
-			public void run() {
-				bird.setDeadValues();
-				while(bird.getBirdY() < 500) {
-					bird.moveBird();
-					panel.repaint();
-					try {
-						Thread.sleep(5);
-					} catch(InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		
-		die.start();
+		animateDeath();
 	}
 	
 	private void score() {
