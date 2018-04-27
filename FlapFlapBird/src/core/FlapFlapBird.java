@@ -46,19 +46,17 @@ public class FlapFlapBird extends JFrame implements KeyListener, MouseListener {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		
-		if(key == KeyEvent.VK_SPACE) {
+		if(key == KeyEvent.VK_SPACE && !engine.getPostGame()) {
 			engine.jump();
-		} else if(key == KeyEvent.VK_ESCAPE) {
-			if(engine.getPostGame()) {
-				engine.resetGame();
-				engine.animate();
-			}
+		} else if(key == KeyEvent.VK_ESCAPE && engine.getPostGame()) {
+			engine.resetGame();
+			engine.animate();
 		}
 	}
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		engine.jump();
+		if(!engine.getPostGame()) engine.jump();
 	}
 
 	@Override
@@ -115,11 +113,12 @@ public class FlapFlapBird extends JFrame implements KeyListener, MouseListener {
 				engine.getBottomPipes().get(p).paint(g, pipe);
 			}
 			
-			engine.getBird().paint(g, birdBody);
 			g.drawImage(bottom, 0, 400, 650, 204, null);
 			
 			for(Ground gnd : engine.getGrounds())
 				gnd.paint(g, ground);
+			
+			engine.getBird().paint(g, birdBody);
 			
 			g.setFont(smallFont);
 			g.setColor(Color.BLACK);

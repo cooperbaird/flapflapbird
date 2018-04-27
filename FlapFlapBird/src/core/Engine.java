@@ -45,8 +45,9 @@ public class Engine {
 	
 	public void animate() {
 		Thread animate = new Thread() {
+			@Override
 			public void run() {
-				while(!getPostGame()) {
+				while(!postGame) {
 					gameMovement();
 					panel.repaint();
 					try {
@@ -59,8 +60,9 @@ public class Engine {
 		};
 		
 		Thread flapWings = new Thread() {
+			@Override
 			public void run() {
-				while(!getPostGame()) {
+				while(!postGame) {
 					flapWings();
 					try { 
 						Thread.sleep(175); 
@@ -110,6 +112,22 @@ public class Engine {
 	private void endGame() {
 		scoreOperations.editHighScore();
 		postGame = true;
+		Thread die = new Thread() {
+			@Override
+			public void run() {
+				bird.resetValues();
+				while(bird.getBirdY() < 500) {
+					bird.moveBird();
+					panel.repaint();
+					try {
+						Thread.sleep(5);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		die.start();
 	}
 	
 	private void score() {
