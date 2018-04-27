@@ -30,6 +30,11 @@ public class Bird {
 		vertSpeed = jumpSpeed;
 	}
 	
+	public void setDeadValues() {
+		time = 0;
+		vertSpeed = -20;
+	}
+	
 	public void hover() {
 		birdY = (int) (220 + 12*Math.sin(Math.toRadians(angle)));
 		angle++;

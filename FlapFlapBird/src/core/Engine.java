@@ -112,10 +112,11 @@ public class Engine {
 	private void endGame() {
 		scoreOperations.editHighScore();
 		postGame = true;
+		
 		Thread die = new Thread() {
 			@Override
 			public void run() {
-				bird.resetValues();
+				bird.setDeadValues();
 				while(bird.getBirdY() < 500) {
 					bird.moveBird();
 					panel.repaint();
@@ -127,6 +128,7 @@ public class Engine {
 				}
 			}
 		};
+		
 		die.start();
 	}
 	
